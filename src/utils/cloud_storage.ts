@@ -2,6 +2,8 @@ import { Storage } from '@google-cloud/storage';
 import { format } from 'util';
 import { v4 as uuidv4 } from 'uuid';
 import 'dotenv/config';
+import { pipeline } from 'stream/promises';
+import { Readable } from 'stream';
 
 const uuid = uuidv4();
 
@@ -15,45 +17,31 @@ const storage = new Storage({
 });
 
 const bucket = storage.bucket('ecommerce-imagenes-3b10a.firebasestorage.app');
+// const bucket = storage.bucket('ecommerce-imagenes-3b10a.appspot.com');
 
 /**
  * Subir archivo a Firebase Storage
  */
-export default function uploadFile(
+export default async function uploadFile(
   file: Express.Multer.File,
   pathImage: string,
 ): Promise<string> {
-  return new Promise((resolve, reject) => {
-    if (pathImage) {
-      let fileUpload = bucket.file(`${pathImage}`);
-      const blobStream = fileUpload.createWriteStream({
-        metadata: {
-          contentType: 'image/png',
-          metadata: {
-            firebaseStorageDownloadTokens: uuid,
-          },
-        },
-        resumable: false,
-      });
+  const uuid = uuidv4();
 
-      blobStream.on('error', (error) => {
-        console.error('ENV CHECK:', {
-          email: !!process.env.GCP_CLIENT_EMAIL,
-          key: !!process.env.GCP_PRIVATE_KEY,
-        });
-        console.error('Error al subir archivo a firebase', error);
-        reject('Something is wrong! Unable to upload at the moment.');
-      });
+  const fileUpload = bucket.file(pathImage);
 
-      blobStream.on('finish', () => {
-        const url = format(
-          `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${fileUpload.name}?alt=media&token=${uuid}`,
-        );
-        console.log('URL DE CLOUD STORAGE ', url);
-        resolve(url);
-      });
-
-      blobStream.end(file.buffer);
-    }
+  const writeStream = fileUpload.createWriteStream({
+    resumable: false,
+    contentType: file.mimetype,
+    metadata: {
+      firebaseStorageDownloadTokens: uuid,
+    },
   });
+
+  // ✅ CAMBIO CLAVE PARA VERCEL
+  await pipeline(Readable.from(file.buffer), writeStream);
+
+  return `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(
+    fileUpload.name,
+  )}?alt=media&token=${uuid}`;
 }
