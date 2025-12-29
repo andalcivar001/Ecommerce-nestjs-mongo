@@ -9,7 +9,7 @@ import { Model } from 'mongoose';
 import { User, UserDocument } from './schemas/user.schema';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import uploadFile from 'src/utils/cloud_storage';
+import uploadFile from '../utils/cloud_storage';
 
 @Injectable()
 export class UsersService {
