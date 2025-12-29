@@ -14,10 +14,6 @@ const storage = new Storage({
   },
 });
 
-console.log('ENV CHECK:', {
-  email: !!process.env.GCP_CLIENT_EMAIL,
-  key: !!process.env.GCP_PRIVATE_KEY,
-});
 const bucket = storage.bucket('ecommerce-imagenes-3b10a.firebasestorage.app');
 
 /**
@@ -41,6 +37,10 @@ export default function uploadFile(
       });
 
       blobStream.on('error', (error) => {
+        console.error('ENV CHECK:', {
+          email: !!process.env.GCP_CLIENT_EMAIL,
+          key: !!process.env.GCP_PRIVATE_KEY,
+        });
         console.error('Error al subir archivo a firebase', error);
         reject('Something is wrong! Unable to upload at the moment.');
       });
