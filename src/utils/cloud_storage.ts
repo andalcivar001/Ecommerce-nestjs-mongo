@@ -7,6 +7,21 @@ import { Readable } from 'stream';
 
 const uuid = uuidv4();
 
+const client = process.env.GCP_CLIENT_EMAIL;
+const key = process.env.GCP_PRIVATE_KEY;
+
+if (!client) {
+  console.error('Variable de enterno CCP_CLIENT_EMAIL no encontrada');
+} else {
+  console.error('client es valido');
+}
+
+if (!key) {
+  console.error('Variable de enterno CCP_PRIVATE_KEY no encontrada');
+} else {
+  console.error('key es valido');
+}
+
 const storage = new Storage({
   projectId: 'ecommerce-imagenes-3b10a',
   //keyFilename: './serviceAccountKey.json',
