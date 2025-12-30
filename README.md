@@ -96,3 +96,7 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+/**_ PARA SUBIR IMAGENES A VERCEL _**/
+para que funcione en vercel la subida de imagenes y el token en firebase de convirtio el archivo serviceAccountKey.json a base64 con este comando
+[Convert]::ToBase64String([IO.File]::ReadAllBytes("serviceAccountKey.json")), este de me devuelve un string largo que en realidad sigue siendo un objeto
