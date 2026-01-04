@@ -34,14 +34,14 @@ export class UsersController {
     return this.usersService.create(user);
   }
 
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Put(':id')
   update(@Param('id') id: string, @Body() user: UpdateUserDto) {
     console.log('user', user);
     return this.usersService.update(id, user);
   }
 
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Put('upload/:id')
   @UseInterceptors(FileInterceptor('file'))
   updateWithImage(
