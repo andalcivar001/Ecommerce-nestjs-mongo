@@ -6,6 +6,9 @@ export type CategoryDocument = Category & Document;
 @Schema({ timestamps: true })
 export class Category {
   @Prop({ required: true, trim: true })
+  nombre: string;
+
+  @Prop({ required: false, trim: true, default: '' })
   descripcion: string;
 
   @Prop({ default: true })
