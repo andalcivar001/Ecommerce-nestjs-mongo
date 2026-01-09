@@ -68,9 +68,6 @@ export class CategoryService {
       throw new HttpException('Categoria no encontrada', HttpStatus.NOT_FOUND);
     }
 
-    return {
-      message: 'Categoria eliminada correctamente',
-      id,
-    };
+    return true;
   }
 }
