@@ -7,6 +7,9 @@ export type SubCategoryDocument = SubCategory & Document;
 @Schema({ timestamps: true })
 export class SubCategory {
   @Prop({ required: true, trim: true })
+  nombre: string;
+
+  @Prop({ required: false, trim: true, default: '' })
   descripcion: string;
 
   @Prop({

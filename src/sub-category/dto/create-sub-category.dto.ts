@@ -9,6 +9,10 @@ import {
 export class CreateSubCategoryDto {
   @IsNotEmpty()
   @IsString()
+  nombre: string;
+
+  @IsOptional()
+  @IsString()
   descripcion: string;
 
   @IsNotEmpty()
