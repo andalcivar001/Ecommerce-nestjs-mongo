@@ -89,9 +89,6 @@ export class SubCategoryService {
       );
     }
 
-    return {
-      message: 'SubCategoria eliminada correctamente',
-      id,
-    };
+    return true;
   }
 }
