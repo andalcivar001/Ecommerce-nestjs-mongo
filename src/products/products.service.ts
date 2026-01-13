@@ -1,0 +1,94 @@
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { isValidObjectId, Model } from 'mongoose';
+import {
+  Category,
+  CategoryDocument,
+} from 'src/category/schema/category.schema';
+import { CreateSubCategoryDto } from 'src/sub-category/dto/create-sub-category.dto';
+import {
+  SubCategory,
+  SubCategoryDocument,
+} from 'src/sub-category/schema/subcategory.schema';
+import uploadFile from 'src/utils/cloud_storage';
+import { CreateProductDto } from './dto/create-product.dto';
+import { Product, ProductDocument } from './schemas/product.schema';
+
+@Injectable()
+export class ProductService {
+  constructor(
+    @InjectModel(Product.name)
+    private readonly productModel: Model<ProductDocument>,
+
+    @InjectModel(SubCategory.name)
+    private readonly subCategoryModel: Model<SubCategoryDocument>,
+
+    @InjectModel(Category.name)
+    private readonly categoryModel: Model<CategoryDocument>,
+  ) {}
+
+  async create(subcategory: CreateSubCategoryDto) {
+    if (!isValidObjectId(subcategory.idCategory)) {
+      throw new BadRequestException('ID de cateogria es inválido');
+    }
+
+    const newSubCategory = new this.subCategoryModel(subcategory);
+    return await newSubCategory.save();
+  }
+
+  async craeteWithImages(
+    product: any,
+    file1?: Express.Multer.File,
+    file2?: Express.Multer.File,
+  ) {
+    let url1 = '';
+    let url2 = '';
+
+    if (file1) {
+      url1 = await uploadFile(file1, file1.originalname);
+
+      if (!url1) {
+        throw new HttpException(
+          'La imagen 1 no se pudo guardar',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+
+    if (file2) {
+      url1 = await uploadFile(file2, file2.originalname);
+
+      if (!url1) {
+        throw new HttpException(
+          'La imagen 2 no se pudo guardar',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+
+    let dto: CreateProductDto;
+
+    if (typeof product.product === 'string') {
+      try {
+        dto = JSON.parse(product.product);
+      } catch (error) {
+        throw new BadRequestException(
+          'Formato JSON inválido',
+          product.toString(),
+        );
+      }
+    } else {
+      dto = product;
+    }
+    dto.imagen1 = url1;
+    dto.imagen2 = url2;
+
+    const newProducdt = new this.productModel(dto);
+    return await newProducdt.save();
+  }
+}

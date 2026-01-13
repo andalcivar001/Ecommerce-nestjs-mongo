@@ -1,24 +1,43 @@
-// import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-// import { Document, now } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document, now, Types } from 'mongoose';
+import { Category } from 'src/category/schema/category.schema';
+import { SubCategory } from 'src/sub-category/schema/subcategory.schema';
 
-// export type ProductDocument = Product & Document;
+export type ProductDocument = Product & Document;
 
-// @Schema({ timestamps: true })
-// export class Product {
-//   @Prop({ required: true, trim: true })
-//   descripcion: string;
+@Schema({ timestamps: true })
+export class Product {
+  @Prop({ required: true, trim: true })
+  descripcion: string;
 
-//   @Prop({ required: true, trim: true })
-//   telefono: string;
+  @Prop({ required: false, default: '' })
+  codAlterno: string;
 
-//   @Prop({ required: true })
-//   fechaNacimiento: Date;
+  @Prop({ default: '' })
+  imagen1: string;
 
-//   @Prop({ default: '' })
-//   imagen: string;
+  @Prop({ default: 0 })
+  stock: number;
 
-//   @Prop({ default: true })
-//   isActive: boolean;
-// }
+  @Prop({ default: '' })
+  imagen2: string;
 
-// export const UserSchema = SchemaFactory.createForClass(User);
+  @Prop({
+    type: Types.ObjectId,
+    ref: Category.name,
+    required: true,
+  })
+  idCategory: Types.ObjectId;
+
+  @Prop({
+    type: Types.ObjectId,
+    ref: SubCategory.name,
+    required: true,
+  })
+  idSubcategory: Types.ObjectId;
+
+  @Prop({ default: true })
+  isActive: boolean;
+}
+
+export const ProductSchema = SchemaFactory.createForClass(Product);
