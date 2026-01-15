@@ -32,6 +32,23 @@ export class ProductService {
     private readonly categoryModel: Model<CategoryDocument>,
   ) {}
 
+  async findAll() {
+    return await this.productModel.find();
+  }
+
+  async findById(id: string) {
+    try {
+      const category = await this.productModel.findById(id);
+      if (!category) {
+        throw new HttpException('Producto no encontrado', HttpStatus.NOT_FOUND);
+      }
+
+      return category;
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
   async create(subcategory: CreateSubCategoryDto) {
     if (!isValidObjectId(subcategory.idCategory)) {
       throw new BadRequestException('ID de cateogria es inválido');
@@ -42,6 +59,57 @@ export class ProductService {
   }
 
   async craeteWithImages(
+    product: any,
+    file1?: Express.Multer.File,
+    file2?: Express.Multer.File,
+  ) {
+    let url1 = '';
+    let url2 = '';
+
+    if (file1) {
+      url1 = await uploadFile(file1, file1.originalname);
+
+      if (!url1) {
+        throw new HttpException(
+          'La imagen 1 no se pudo guardar',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+
+    if (file2) {
+      url1 = await uploadFile(file2, file2.originalname);
+
+      if (!url1) {
+        throw new HttpException(
+          'La imagen 2 no se pudo guardar',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+
+    let dto: CreateProductDto;
+
+    if (typeof product.product === 'string') {
+      try {
+        dto = JSON.parse(product.product);
+      } catch (error) {
+        throw new BadRequestException(
+          'Formato JSON inválido',
+          product.toString(),
+        );
+      }
+    } else {
+      dto = product;
+    }
+    dto.imagen1 = url1;
+    dto.imagen2 = url2;
+
+    const newProducdt = new this.productModel(dto);
+    return await newProducdt.save();
+  }
+
+  async WithImages(
     product: any,
     file1?: Express.Multer.File,
     file2?: Express.Multer.File,

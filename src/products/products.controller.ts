@@ -1,17 +1,34 @@
 import {
   Body,
   Controller,
+  Get,
   MaxFileSizeValidator,
+  Param,
   ParseFilePipe,
   UploadedFiles,
+  UseGuards,
 } from '@nestjs/common';
 import { ProductService } from './products.service';
+import { JwtAuthGuard } from 'src/auth/jwt/jwt-auth.guard';
 
 @Controller('products')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
-  updateWithImages(
+  @UseGuards(JwtAuthGuard)
+  @Get()
+  findAll() {
+    return this.productService.findAll();
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':id')
+  findById(@Param('id') id: string) {
+    return this.productService.findById(id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  createWithImages(
     @UploadedFiles()
     files: {
       file1?: Express.Multer.File[];
