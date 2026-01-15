@@ -1,9 +1,11 @@
+import { Type } from 'class-transformer';
 import {
   IsEmail,
   IsNotEmpty,
   IsOptional,
   IsBoolean,
   IsString,
+  IsNumber,
 } from 'class-validator';
 
 export class CreateProductDto {
@@ -15,8 +17,9 @@ export class CreateProductDto {
   @IsOptional()
   codAlterno: string;
 
-  @IsString()
-  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  @IsNotEmpty()
   stock: number;
 
   @IsNotEmpty()

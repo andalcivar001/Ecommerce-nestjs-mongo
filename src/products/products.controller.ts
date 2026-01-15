@@ -5,11 +5,15 @@ import {
   MaxFileSizeValidator,
   Param,
   ParseFilePipe,
+  Post,
   UploadedFiles,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ProductService } from './products.service';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt-auth.guard';
+import { CreateProductDto } from './dto/create-product.dto';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
 
 @Controller('products')
 export class ProductController {
@@ -28,27 +32,38 @@ export class ProductController {
   }
 
   @UseGuards(JwtAuthGuard)
-  createWithImages(
+  @Post()
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'file1', maxCount: 1 },
+      { name: 'file2', maxCount: 1 },
+    ]),
+  )
+  async createWithImages(
     @UploadedFiles()
     files: {
       file1?: Express.Multer.File[];
       file2?: Express.Multer.File[];
     },
-    @Body() product: any,
+    @Body() product: CreateProductDto,
   ) {
     const file1 = files?.file1?.[0];
     const file2 = files?.file2?.[0];
 
-    // Validar file1 (si es requerido)
-    new ParseFilePipe({
-      validators: [new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 10 })],
-    }).transform(file1);
+    // ✅ file1 opcional
+    if (file1) {
+      new ParseFilePipe({
+        validators: [new MaxFileSizeValidator({ maxSize: 10 * 1024 * 1024 })],
+      }).transform(file1);
+    }
 
-    // Validar file2 (si es requerido)
-    new ParseFilePipe({
-      validators: [new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 10 })],
-    }).transform(file2);
-
+    // ✅ file2 opcional
+    if (file2) {
+      new ParseFilePipe({
+        validators: [new MaxFileSizeValidator({ maxSize: 10 * 1024 * 1024 })],
+      }).transform(file2);
+    }
+    debugger;
     return this.productService.craeteWithImages(product, file1, file2);
   }
 }
