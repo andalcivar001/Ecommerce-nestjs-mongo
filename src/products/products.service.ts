@@ -163,4 +163,18 @@ export class ProductService {
     Object.assign(productFound, dto);
     return await productFound.save();
   }
+
+  async delete(id: string) {
+    if (!isValidObjectId(id)) {
+      throw new BadRequestException('ID inválido');
+    }
+
+    const product = await this.productModel.findByIdAndDelete(id);
+
+    if (!product) {
+      throw new HttpException('Producto no encontrado', HttpStatus.NOT_FOUND);
+    }
+
+    return true;
+  }
 }

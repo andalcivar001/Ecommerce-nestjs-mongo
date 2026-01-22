@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   MaxFileSizeValidator,
   Param,
@@ -105,5 +106,10 @@ export class ProductController {
     debugger;
     console.log('ID PARAM:', id);
     return this.productService.updateWithImages(id, product, file1, file2);
+  }
+
+  @Delete(':id')
+  delete(@Param('id') id: string) {
+    return this.productService.delete(id);
   }
 }
