@@ -15,6 +15,7 @@ import { ProductService } from './products.service';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt-auth.guard';
 import { CreateProductDto } from './dto/create-product.dto';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { UpdateProductDto } from './dto/update-product.dto';
 
 @Controller('products')
 export class ProductController {
@@ -82,8 +83,8 @@ export class ProductController {
       file1?: Express.Multer.File[];
       file2?: Express.Multer.File[];
     },
-    @Param('id') id: string,
-    @Body() product: CreateProductDto,
+    @Param(':id') id: string,
+    @Body() product: UpdateProductDto,
   ) {
     const file1 = files?.file1?.[0];
     const file2 = files?.file2?.[0];
