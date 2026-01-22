@@ -49,15 +49,6 @@ export class ProductService {
     }
   }
 
-  async create(subcategory: CreateSubCategoryDto) {
-    if (!isValidObjectId(subcategory.idCategory)) {
-      throw new BadRequestException('ID de cateogria es inválido');
-    }
-
-    const newSubCategory = new this.subCategoryModel(subcategory);
-    return await newSubCategory.save();
-  }
-
   async craeteWithImages(
     product: any,
     file1?: Express.Multer.File,
@@ -108,55 +99,65 @@ export class ProductService {
     const newProducdt = new this.productModel(dto);
     return await newProducdt.save();
   }
+  async updateWithImages(
+    id: string,
+    product: any,
+    file1?: Express.Multer.File,
+    file2?: Express.Multer.File,
+  ) {
+    const productFound = await this.productModel.findById(id);
 
-  // async WithImages(
-  //   product: any,
-  //   file1?: Express.Multer.File,
-  //   file2?: Express.Multer.File,
-  // ) {
-  //   let url1 = '';
-  //   let url2 = '';
+    if (!productFound) {
+      throw new HttpException('Producto no existe', HttpStatus.NOT_FOUND);
+    }
 
-  //   if (file1) {
-  //     url1 = await uploadFile(file1, file1.originalname);
+    let dto: CreateProductDto;
 
-  //     if (!url1) {
-  //       throw new HttpException(
-  //         'La imagen 1 no se pudo guardar',
-  //         HttpStatus.INTERNAL_SERVER_ERROR,
-  //       );
-  //     }
-  //   }
+    if (typeof product.product === 'string') {
+      try {
+        dto = JSON.parse(product.product);
+      } catch (error) {
+        throw new BadRequestException(
+          'Formato JSON inválido',
+          product.toString(),
+        );
+      }
+    } else {
+      dto = product;
+    }
 
-  //   if (file2) {
-  //     url2 = await uploadFile(file2, file2.originalname);
+    let url1 = '';
+    let url2 = '';
 
-  //     if (!url2) {
-  //       throw new HttpException(
-  //         'La imagen 2 no se pudo guardar',
-  //         HttpStatus.INTERNAL_SERVER_ERROR,
-  //       );
-  //     }
-  //   }
+    if (file1) {
+      url1 = await uploadFile(file1, file1.originalname);
 
-  //   let dto: CreateProductDto;
+      if (!url1) {
+        throw new HttpException(
+          'La imagen 1 no se pudo guardar',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+      dto.imagen1 = url1;
+    } else {
+      dto.imagen1 = productFound.imagen1;
+    }
 
-  //   if (typeof product.product === 'string') {
-  //     try {
-  //       dto = JSON.parse(product.product);
-  //     } catch (error) {
-  //       throw new BadRequestException(
-  //         'Formato JSON inválido',
-  //         product.toString(),
-  //       );
-  //     }
-  //   } else {
-  //     dto = product;
-  //   }
-  //   dto.imagen1 = url1;
-  //   dto.imagen2 = url2;
+    if (file2) {
+      url2 = await uploadFile(file2, file2.originalname);
 
-  //   const newProducdt = new this.productModel(dto);
-  //   return await newProducdt.save();
-  // }
+      if (!url2) {
+        throw new HttpException(
+          'La imagen 2 no se pudo guardar',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+      dto.imagen2 = url2;
+    } else {
+      dto.imagen2 = productFound.imagen2;
+    }
+
+    Object.assign(productFound, dto);
+    return await productFound.save();
+  }
 }
