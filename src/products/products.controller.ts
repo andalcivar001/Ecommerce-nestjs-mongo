@@ -83,7 +83,7 @@ export class ProductController {
       file1?: Express.Multer.File[];
       file2?: Express.Multer.File[];
     },
-    @Param(':id') id: string,
+    @Param('id') id: string,
     @Body() product: UpdateProductDto,
   ) {
     const file1 = files?.file1?.[0];
@@ -103,6 +103,7 @@ export class ProductController {
       }).transform(file2);
     }
     debugger;
+    console.log('ID PARAM:', id);
     return this.productService.updateWithImages(id, product, file1, file2);
   }
 }
