@@ -50,7 +50,7 @@ export class ProductService {
   }
 
   async craeteWithImages(
-    product: any,
+    product: CreateProductDto,
     file1?: Express.Multer.File,
     file2?: Express.Multer.File,
   ) {
@@ -79,24 +79,27 @@ export class ProductService {
       }
     }
 
-    let dto: CreateProductDto;
+    // let dto: CreateProductDto;
+    // dto = product;
+    product.imagen1 = url1;
+    product.imagen2 = url2;
 
-    if (typeof product.product === 'string') {
-      try {
-        dto = JSON.parse(product.product);
-      } catch (error) {
-        throw new BadRequestException(
-          'Formato JSON inválido',
-          product.toString(),
-        );
-      }
-    } else {
-      dto = product;
-    }
-    dto.imagen1 = url1;
-    dto.imagen2 = url2;
+    // if (typeof product.product === 'string') {
+    //   try {
+    //     dto = JSON.parse(product.product);
+    //   } catch (error) {
+    //     throw new BadRequestException(
+    //       'Formato JSON inválido',
+    //       product.toString(),
+    //     );
+    //   }
+    // } else {
+    //   dto = product;
+    // }
+    // dto.imagen1 = url1;
+    // dto.imagen2 = url2;
 
-    const newProducdt = new this.productModel(dto);
+    const newProducdt = new this.productModel(product);
     return await newProducdt.save();
   }
   async updateWithImages(
