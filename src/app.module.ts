@@ -6,6 +6,9 @@ import { AuthModule } from './auth/auth.module';
 import { CategoryModule } from './category/category.module';
 import { SubCategoryModule } from './sub-category/sub-category.module';
 import { ProductModule } from './products/products.module';
+import { ClientModule } from './client/client.module';
+import { ProvinceModule } from './province/province.module';
+import { CitiesModule } from './cities/cities.module';
 
 @Module({
   imports: [
@@ -21,6 +24,9 @@ import { ProductModule } from './products/products.module';
     CategoryModule,
     SubCategoryModule,
     ProductModule,
+    ClientModule,
+    ProvinceModule,
+    CitiesModule,
   ],
 })
 export class AppModule {}
