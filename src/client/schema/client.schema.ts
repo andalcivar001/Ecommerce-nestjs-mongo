@@ -30,10 +30,10 @@ export class Client {
   })
   email: string;
 
-  @Prop({ required: true, trim: true })
+  @Prop({ required: false, trim: true })
   direccion: string;
 
-  @Prop({ required: true, trim: true })
+  @Prop({ required: false, trim: true })
   telefono: number;
 
   @Prop({
