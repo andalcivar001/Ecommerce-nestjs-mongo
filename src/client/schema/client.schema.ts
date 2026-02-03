@@ -34,7 +34,7 @@ export class Client {
   direccion: string;
 
   @Prop({ required: false, trim: true })
-  telefono: number;
+  telefono: string;
 
   @Prop({
     type: Types.ObjectId,

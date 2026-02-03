@@ -29,8 +29,7 @@ export class CreateClientDto {
   direccion: string;
 
   @IsOptional()
-  @IsNumber()
-  telefono: number;
+  telefono: string;
 
   @IsString()
   @IsNotEmpty()
