@@ -19,6 +19,9 @@ export class Product {
   @Prop({ default: 0 })
   stock: number;
 
+  @Prop({ default: 0 })
+  precio: number;
+
   @Prop({ default: '' })
   imagen2: string;
 
