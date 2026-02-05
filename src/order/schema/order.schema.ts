@@ -15,7 +15,7 @@ export class OrderDetalle {
   idProducto: Types.ObjectId;
 
   @Prop({ required: true, min: 0 })
-  precioVenta: number;
+  precio: number;
 
   @Prop({ required: true, min: 1 })
   cantidad: number;
@@ -45,6 +45,9 @@ export class Order {
     ],
   })
   detalles: OrderDetalle[];
+
+  @Prop({ required: false, default: 'N' })
+  estado: string;
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);

@@ -6,7 +6,7 @@ export class CreateOrderDetalleDto {
 
   @IsNumber()
   @Min(0)
-  precioVenta: number;
+  precio: number;
 
   @IsNumber()
   @IsPositive()

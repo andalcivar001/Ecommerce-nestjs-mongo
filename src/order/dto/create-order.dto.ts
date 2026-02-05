@@ -19,10 +19,6 @@ export class CreateOrderDto {
   @IsMongoId()
   idCliente: string;
 
-  @IsNumber()
-  @Min(0)
-  total: number;
-
   @IsArray()
   @ArrayMinSize(1)
   @ValidateNested({ each: true })

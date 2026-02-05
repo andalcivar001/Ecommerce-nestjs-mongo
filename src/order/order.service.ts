@@ -18,7 +18,12 @@ export class OrderService {
   ) {}
 
   async create(order: CreateOrderDto) {
+    const total = order.detalles.reduce(
+      (sum, item) => sum + item.precio * item.cantidad,
+      0,
+    );
     const newOrder = new this.orderModel(order);
+    newOrder.total = total;
     return await newOrder.save();
   }
 
@@ -46,6 +51,13 @@ export class OrderService {
       if (!orderFound) {
         throw new HttpException('Orden no existe', HttpStatus.NOT_FOUND);
       }
+
+      const total = order.detalles!.reduce(
+        (sum, item) => sum + item.precio * item.cantidad,
+        0,
+      );
+
+      orderFound.total = total;
 
       Object.assign(orderFound, order);
       return await orderFound.save();
