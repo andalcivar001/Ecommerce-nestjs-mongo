@@ -10,14 +10,16 @@ export class CitiesService {
     private readonly cityModel: Model<CityDocument>,
   ) {}
   async findAll() {
-    return await this.cityModel.find();
+    return await this.cityModel.find().sort({ nombre: 1 });
   }
 
   async findByProvince(idProvince: string) {
     try {
-      const cities = await this.cityModel.find({
-        codigoProvincia: idProvince,
-      });
+      const cities = await this.cityModel
+        .find({
+          codigoProvincia: idProvince,
+        })
+        .sort({ nombre: 1 });
       if (!cities) {
         throw new HttpException('Ciudad no encontrada', HttpStatus.NOT_FOUND);
       }

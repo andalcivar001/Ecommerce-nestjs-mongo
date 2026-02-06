@@ -16,6 +16,6 @@ export class ProvinceService {
   ) {}
 
   async findAll() {
-    return await this.provinceModel.find();
+    return await this.provinceModel.find().sort({ nombre: 1 });
   }
 }

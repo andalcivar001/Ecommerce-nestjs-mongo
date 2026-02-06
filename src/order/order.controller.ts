@@ -12,6 +12,7 @@ import { OrderService } from './order.service';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt-auth.guard';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
+import { ConsultaOrderDto } from './dto/consultar-order.dto';
 
 @Controller('order')
 export class OrderController {
@@ -44,5 +45,10 @@ export class OrderController {
   @Delete(':id')
   delete(@Param('id') id: string) {
     return this.orderService.delete(id);
+  }
+
+  @Post('consultar')
+  async consultarOrders(@Body() consultaOrderDto: ConsultaOrderDto) {
+    return this.orderService.consultarOrders(consultaOrderDto);
   }
 }

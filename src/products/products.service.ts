@@ -33,7 +33,7 @@ export class ProductService {
   ) {}
 
   async findAll() {
-    return await this.productModel.find();
+    return await this.productModel.find().sort({ descripcion: 1 });
   }
 
   async findById(id: string) {

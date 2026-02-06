@@ -9,6 +9,7 @@ import { isValidObjectId, Model } from 'mongoose';
 import { Order, OrderDocument } from './schema/order.schema';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
+import { ConsultaOrderDto } from './dto/consultar-order.dto';
 
 @Injectable()
 export class OrderService {
@@ -78,5 +79,31 @@ export class OrderService {
     }
 
     return true;
+  }
+
+  async consultarOrders(consulta: ConsultaOrderDto) {
+    const { fechaDesde, fechaHasta, idCliente } = consulta;
+
+    const desde = new Date(fechaDesde);
+    const hasta = new Date(fechaHasta);
+
+    if (desde > hasta) {
+      throw new BadRequestException(
+        'fechaDesde no puede ser mayor que fechaHasta',
+      );
+    }
+
+    const filtro: any = {
+      createdAt: {
+        $gte: desde,
+        $lte: hasta,
+      },
+    };
+
+    if (idCliente) {
+      filtro.idCliente = idCliente; // o new Types.ObjectId(idCliente)
+    }
+
+    return await this.orderModel.find(filtro).sort({ createdAt: -1 });
   }
 }

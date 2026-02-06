@@ -1,4 +1,10 @@
-import { IsMongoId, IsNumber, IsPositive, Min } from 'class-validator';
+import {
+  IsMongoId,
+  IsNumber,
+  IsOptional,
+  IsPositive,
+  Min,
+} from 'class-validator';
 
 export class CreateOrderDetalleDto {
   @IsMongoId()
@@ -11,4 +17,12 @@ export class CreateOrderDetalleDto {
   @IsNumber()
   @IsPositive()
   cantidad: number;
+
+  @IsOptional()
+  @IsNumber()
+  latitud: number;
+
+  @IsOptional()
+  @IsNumber()
+  longitud: number;
 }

@@ -41,7 +41,7 @@ export class SubCategoryService {
   }
 
   async findAll() {
-    return await this.subCategoryModel.find();
+    return await this.subCategoryModel.find().sort({ descripcion: 1 });
   }
 
   async findById(id: string) {

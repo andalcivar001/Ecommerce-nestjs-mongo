@@ -48,6 +48,12 @@ export class Order {
 
   @Prop({ required: false, default: 'N' })
   estado: string;
+
+  @Prop({ required: false })
+  latitud: number;
+
+  @Prop({ required: false })
+  longitud: number;
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);
