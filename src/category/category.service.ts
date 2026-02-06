@@ -23,7 +23,7 @@ export class CategoryService {
   }
 
   async findAll() {
-    return await this.categoryModel.find();
+    return await this.categoryModel.find().sort({ descripcion: 1 });
   }
 
   async findById(id: string) {
