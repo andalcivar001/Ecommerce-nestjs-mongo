@@ -28,8 +28,8 @@ export class OrderService {
     return await newOrder.save();
   }
 
-  async findAll() {
-    return await this.orderModel.find();
+  async findAll(idUsuario: string) {
+    return await this.orderModel.find({ idUsuario: idUsuario });
   }
 
   async findById(id: string) {

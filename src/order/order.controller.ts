@@ -19,9 +19,9 @@ export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Get()
-  findAll() {
-    return this.orderService.findAll();
+  @Get(':idUsuario')
+  findAll(@Param(':idUsuario') idUsuario: string) {
+    return this.orderService.findAll(idUsuario);
   }
 
   @UseGuards(JwtAuthGuard)

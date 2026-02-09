@@ -28,4 +28,8 @@ export class CreateOrderDto {
   @ValidateNested({ each: true })
   @Type(() => CreateOrderDetalleDto)
   detalles: CreateOrderDetalleDto[];
+
+  @IsMongoId()
+  @IsNotEmpty()
+  idUsuario: string;
 }

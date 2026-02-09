@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, now, Types } from 'mongoose';
 import { Client } from 'src/client/schema/client.schema';
 import { Product } from 'src/products/schemas/product.schema';
+import { User } from 'src/users/schemas/user.schema';
 
 export type OrderDocument = Order & Document;
 
@@ -48,6 +49,13 @@ export class Order {
 
   @Prop({ required: false, default: 'N' })
   estado: string;
+
+  @Prop({
+    type: Types.ObjectId,
+    ref: User.name,
+    required: true,
+  })
+  idUsuario: Types.ObjectId;
 
   @Prop({ required: false })
   latitud: number;
