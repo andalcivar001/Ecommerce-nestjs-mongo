@@ -20,7 +20,7 @@ export class OrderController {
 
   @UseGuards(JwtAuthGuard)
   @Get(':idUsuario')
-  findAll(@Param(':idUsuario') idUsuario: string) {
+  findAll(@Param('idUsuario') idUsuario: string) {
     return this.orderService.findAll(idUsuario);
   }
 
@@ -42,11 +42,13 @@ export class OrderController {
     return this.orderService.update(id, category);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   delete(@Param('id') id: string) {
     return this.orderService.delete(id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('consultar')
   async consultarOrders(@Body() consultaOrderDto: ConsultaOrderDto) {
     return this.orderService.consultarOrders(consultaOrderDto);

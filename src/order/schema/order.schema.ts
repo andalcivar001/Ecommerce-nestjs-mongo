@@ -22,6 +22,24 @@ export class OrderDetalle {
   cantidad: number;
 }
 
+/* ======================================================
+   Schema explícito del subdocumento
+====================================================== */
+export const OrderDetalleSchema = SchemaFactory.createForClass(OrderDetalle);
+
+/* ======================================================
+   Virtual: producto
+====================================================== */
+OrderDetalleSchema.virtual('producto', {
+  ref: Product.name,
+  localField: 'idProducto',
+  foreignField: '_id',
+  justOne: true,
+});
+
+OrderDetalleSchema.set('toJSON', { virtuals: true });
+OrderDetalleSchema.set('toObject', { virtuals: true });
+
 @Schema({ timestamps: true })
 export class Order {
   @Prop({ required: true, default: Date.now })
@@ -38,7 +56,7 @@ export class Order {
   total: number;
 
   @Prop({
-    type: [OrderDetalle],
+    type: [OrderDetalleSchema],
     required: true,
     validate: [
       (v: OrderDetalle[]) => v.length > 0,

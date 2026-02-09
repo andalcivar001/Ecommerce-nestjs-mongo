@@ -29,7 +29,18 @@ export class OrderService {
   }
 
   async findAll(idUsuario: string) {
-    return await this.orderModel.find({ idUsuario: idUsuario });
+    // *********retorna todos los campos **********
+    // return this.orderModel
+    //   .find({ idUsuario })
+    //   .populate('cliente')
+    //   .populate('usuario')
+    //   .populate('detalles.producto');
+
+    return this.orderModel
+      .find({ idUsuario })
+      .populate('cliente', 'nombre telefono numeroIdentificacion')
+      .populate('usuario', 'email')
+      .populate('detalles.producto', 'descripcion codAlterno precio stock');
   }
 
   async findById(id: string) {
