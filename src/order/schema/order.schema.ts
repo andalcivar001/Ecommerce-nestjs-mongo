@@ -63,5 +63,23 @@ export class Order {
   @Prop({ required: false })
   longitud: number;
 }
-
 export const OrderSchema = SchemaFactory.createForClass(Order);
+
+// creo campos virtuales para devolverlos en el response
+OrderSchema.virtual('cliente', {
+  ref: Client.name,
+  localField: 'idCliente',
+  foreignField: '_id',
+  justOne: true,
+});
+
+OrderSchema.virtual('usuario', {
+  ref: User.name,
+  localField: 'idUsuario',
+  foreignField: '_id',
+  justOne: true,
+});
+
+// habilito las virtuales
+OrderSchema.set('toJSON', { virtuals: true });
+OrderSchema.set('toObject', { virtuals: true });
