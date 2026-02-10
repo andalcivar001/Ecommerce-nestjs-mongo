@@ -5,26 +5,43 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { isValidObjectId, Model } from 'mongoose';
+import { isValidObjectId, Model, ClientSession } from 'mongoose';
 import { Order, OrderDocument } from './schema/order.schema';
+import { Counter, CounterDocument } from './schema/counter.schema';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { ConsultaOrderDto } from './dto/consultar-order.dto';
 
 @Injectable()
 export class OrderService {
+  private readonly SEQUENCE_NAME = 'order_secuencia';
+
   constructor(
     @InjectModel(Order.name)
     private readonly orderModel: Model<OrderDocument>,
+    @InjectModel(Counter.name)
+    private readonly counterModel: Model<CounterDocument>,
   ) {}
+
+  async getNextSequence(): Promise<number> {
+    const counter = await this.counterModel.findOneAndUpdate(
+      { sequence_name: this.SEQUENCE_NAME },
+      { $inc: { sequence_value: 1 } },
+      { upsert: true, new: true },
+    );
+    return counter.sequence_value;
+  }
 
   async create(order: CreateOrderDto) {
     const total = order.detalles.reduce(
       (sum, item) => sum + item.precio * item.cantidad,
       0,
     );
+
     const newOrder = new this.orderModel(order);
     newOrder.total = total;
+    newOrder.secuencia = await this.getNextSequence();
+
     return await newOrder.save();
   }
 

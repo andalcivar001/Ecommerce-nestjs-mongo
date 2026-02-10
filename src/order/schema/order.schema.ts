@@ -45,6 +45,9 @@ export class Order {
   @Prop({ required: true, default: Date.now })
   fecha: Date;
 
+  @Prop({ required: false, default: 0 }) // Changed: will be auto-generated
+  secuencia: number;
+
   @Prop({
     type: Types.ObjectId,
     ref: Client.name,
