@@ -35,6 +35,12 @@ export class ProductController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Get('code/:code')
+  findByCodAlterno(@Param('code') code: string) {
+    return this.productService.findByCodAlterno(code);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Post()
   @UseInterceptors(
     FileFieldsInterceptor([

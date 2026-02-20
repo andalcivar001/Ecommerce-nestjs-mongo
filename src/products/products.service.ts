@@ -49,6 +49,18 @@ export class ProductService {
     }
   }
 
+  async findByCodAlterno(code: string) {
+    try {
+      const product = await this.productModel.findOne({ codAlterno: code });
+      if (!product) {
+        throw new HttpException('Producto no encontrado', HttpStatus.NOT_FOUND);
+      }
+      return product;
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
   async craeteWithImages(
     product: CreateProductDto,
     file1?: Express.Multer.File,
