@@ -3,11 +3,14 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
+  HttpStatus,
   MaxFileSizeValidator,
   Param,
   ParseFilePipe,
   Post,
   Put,
+  Query,
   UploadedFiles,
   UseGuards,
   UseInterceptors,
@@ -28,16 +31,33 @@ export class ProductController {
     return this.productService.findAll();
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Get(':id')
-  findById(@Param('id') id: string) {
-    return this.productService.findById(id);
+  @Get('search') // La URL final será /products/search?q=tu_busqueda
+  async search(@Query('q') query: string) {
+    // 1. Validación básica: Si no envían nada, devolvemos un error o lista vacía
+    if (!query || query.trim().length === 0) {
+      throw new HttpException(
+        'El término de búsqueda es requerido',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    // 2. Llamamos al método del servicio
+    const results = await this.productService.findByDescription(query);
+
+    // 3. Retornamos los resultados (Nest enviará un 200 OK por defecto)
+    return results;
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('code/:code')
   findByCodAlterno(@Param('code') code: string) {
     return this.productService.findByCodAlterno(code);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':id')
+  findById(@Param('id') id: string) {
+    return this.productService.findById(id);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -72,7 +92,6 @@ export class ProductController {
         validators: [new MaxFileSizeValidator({ maxSize: 10 * 1024 * 1024 })],
       }).transform(file2);
     }
-    debugger;
     return this.productService.craeteWithImages(product, file1, file2);
   }
 
@@ -114,6 +133,7 @@ export class ProductController {
     return this.productService.updateWithImages(id, product, file1, file2);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   delete(@Param('id') id: string) {
     return this.productService.delete(id);

@@ -61,6 +61,33 @@ export class ProductService {
     }
   }
 
+  async findByDescription(query: string) {
+    try {
+      if (!query?.trim()) {
+        throw new BadRequestException('El término de búsqueda es requerido');
+      }
+      // 1. Creamos la expresión regular.
+      // 'i' hace que no importe si es mayúscula o minúscula (case-insensitive)
+      const searchRegex = new RegExp(query, 'i');
+
+      const products = await this.productModel
+        .find({
+          $or: [
+            { descripcion: { $regex: searchRegex } },
+            { codAlterno: { $regex: searchRegex } },
+          ],
+        })
+        .exec(); // .exec() es una buena práctica en Mongoose para retornar una promesa real
+
+      return products;
+    } catch (error) {
+      throw new HttpException(
+        'Error al buscar productos',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   async craeteWithImages(
     product: CreateProductDto,
     file1?: Express.Multer.File,
