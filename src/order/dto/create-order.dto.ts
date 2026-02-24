@@ -32,4 +32,16 @@ export class CreateOrderDto {
   @IsMongoId()
   @IsNotEmpty()
   idUsuario: string;
+
+  @IsNotEmpty()
+  @IsNumber()
+  subtotal: number;
+
+  @IsNotEmpty()
+  @IsNumber()
+  impuestos: number;
+
+  @IsNotEmpty()
+  @IsNumber()
+  total: number;
 }

@@ -58,6 +58,12 @@ export class Order {
   @Prop({ required: true })
   total: number;
 
+  @Prop({ required: true })
+  subtotal: number;
+
+  @Prop({ required: true })
+  impuestos: number;
+
   @Prop({
     type: [OrderDetalleSchema],
     required: true,
