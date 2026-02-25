@@ -23,7 +23,7 @@ export class ClientService {
       const client = await this.clientModel.create(createClientDto);
       return client;
     } catch (error) {
-      console.log('error', error);
+      console.error('error', error);
       throw new InternalServerErrorException(
         'Error creating client',
         error.message,
