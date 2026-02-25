@@ -28,7 +28,7 @@ export class ClientService {
   }
 
   async findAll() {
-    return await this.clientModel.find();
+    return await this.clientModel.find().sort({ nombre: 1 });
   }
 
   async findById(id: string) {
