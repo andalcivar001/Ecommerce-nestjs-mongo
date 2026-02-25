@@ -23,11 +23,8 @@ export class ClientService {
       const client = await this.clientModel.create(createClientDto);
       return client;
     } catch (error) {
-      console.error('ERROR GUARDANDO CLIENTE 222', error.message);
-      throw new InternalServerErrorException(
-        'Error creating client',
-        error.message,
-      );
+      console.error('ERROR GUARDANDO CLIENTE 333', error.message);
+      throw new InternalServerErrorException(error.message);
     }
   }
 
