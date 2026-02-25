@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { Client, ClientDocument } from './schema/client.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { isValidObjectId, Model } from 'mongoose';
+import { isValidObjectId, Model, MongooseError } from 'mongoose';
 import { CreateClientDto } from './dto/create-client.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
 
@@ -23,7 +23,7 @@ export class ClientService {
       const client = await this.clientModel.create(createClientDto);
       return client;
     } catch (error) {
-      console.error('ERROR GUARDANDO CLIENTE', error);
+      console.error('ERROR GUARDANDO CLIENTE 222', error.message);
       throw new InternalServerErrorException(
         'Error creating client',
         error.message,
