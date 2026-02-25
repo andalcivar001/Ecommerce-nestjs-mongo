@@ -25,19 +25,26 @@ export class SubCategoryService {
   ) {}
 
   async create(subcategory: CreateSubCategoryDto) {
-    if (!isValidObjectId(subcategory.idCategory)) {
-      throw new BadRequestException('ID de cateogria es inválido');
-    }
+    try {
+      if (!isValidObjectId(subcategory.idCategory)) {
+        throw new BadRequestException('ID de cateogria es inválido');
+      }
 
-    const categoryFound = await this.categoryModel.findById(
-      subcategory.idCategory,
-    );
-    if (!categoryFound) {
-      throw new HttpException('Categoria no encontrada', HttpStatus.NOT_FOUND);
-    }
+      const categoryFound = await this.categoryModel.findById(
+        subcategory.idCategory,
+      );
+      if (!categoryFound) {
+        throw new HttpException(
+          'Categoria no encontrada',
+          HttpStatus.NOT_FOUND,
+        );
+      }
 
-    const newSubCategory = new this.subCategoryModel(subcategory);
-    return await newSubCategory.save();
+      const newSubCategory = new this.subCategoryModel(subcategory);
+      return await newSubCategory.save();
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   async findAll() {
@@ -71,24 +78,28 @@ export class SubCategoryService {
       Object.assign(subcategoryFound, subcategory);
       return await subcategoryFound.save();
     } catch (error) {
-      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
   async delete(id: string) {
-    if (!isValidObjectId(id)) {
-      throw new BadRequestException('ID inválido');
+    try {
+      if (!isValidObjectId(id)) {
+        throw new BadRequestException('ID inválido');
+      }
+
+      const category = await this.subCategoryModel.findByIdAndDelete(id);
+
+      if (!category) {
+        throw new HttpException(
+          'SubCategoria no encontrada',
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      return true;
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
-    const category = await this.subCategoryModel.findByIdAndDelete(id);
-
-    if (!category) {
-      throw new HttpException(
-        'SubCategoria no encontrada',
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
-    return true;
   }
 }

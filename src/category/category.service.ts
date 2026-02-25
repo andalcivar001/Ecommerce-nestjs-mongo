@@ -38,7 +38,7 @@ export class CategoryService {
 
       return category;
     } catch (error) {
-      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -53,21 +53,28 @@ export class CategoryService {
       Object.assign(categoryFound, category);
       return await categoryFound.save();
     } catch (error) {
-      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
   async delete(id: string) {
-    if (!isValidObjectId(id)) {
-      throw new BadRequestException('ID inválido');
+    try {
+      if (!isValidObjectId(id)) {
+        throw new BadRequestException('ID inválido');
+      }
+
+      const category = await this.categoryModel.findByIdAndDelete(id);
+
+      if (!category) {
+        throw new HttpException(
+          'Categoria no encontrada',
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      return true;
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
-    const category = await this.categoryModel.findByIdAndDelete(id);
-
-    if (!category) {
-      throw new HttpException('Categoria no encontrada', HttpStatus.NOT_FOUND);
-    }
-
-    return true;
   }
 }

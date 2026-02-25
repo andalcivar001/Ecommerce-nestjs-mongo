@@ -64,7 +64,7 @@ export class OrderService {
 
       return order;
     } catch (error) {
-      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -86,22 +86,26 @@ export class OrderService {
       Object.assign(orderFound, order);
       return await orderFound.save();
     } catch (error) {
-      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
   async delete(id: string) {
-    if (!isValidObjectId(id)) {
-      throw new BadRequestException('ID inválido');
+    try {
+      if (!isValidObjectId(id)) {
+        throw new BadRequestException('ID inválido');
+      }
+
+      const order = await this.orderModel.findByIdAndDelete(id);
+
+      if (!order) {
+        throw new HttpException('Orden no encontrada', HttpStatus.NOT_FOUND);
+      }
+
+      return true;
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
-    const order = await this.orderModel.findByIdAndDelete(id);
-
-    if (!order) {
-      throw new HttpException('Orden no encontrada', HttpStatus.NOT_FOUND);
-    }
-
-    return true;
   }
 
   async consultarOrders(consulta: ConsultaOrderDto) {

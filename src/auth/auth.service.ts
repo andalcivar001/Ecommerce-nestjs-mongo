@@ -17,36 +17,40 @@ export class AuthService {
   ) {}
 
   async register(user: RegisterAuthDto) {
-    // 1) validar si email existe
-    const emailExists = await this.userModel
-      .findOne({ email: user.email })
-      .lean();
-    if (emailExists) {
-      throw new HttpException('El email ya existe', HttpStatus.CONFLICT);
+    try {
+      // 1) validar si email existe
+      const emailExists = await this.userModel
+        .findOne({ email: user.email })
+        .lean();
+      if (emailExists) {
+        throw new HttpException('El email ya existe', HttpStatus.CONFLICT);
+      }
+
+      // 2) crear usuario (si tu UsersService ya hashea, ideal es re-usarlo;
+      // aquí asumo que `user.password` ya llega hasheada o tienes middleware)
+      user.password = await hash(user.password, 10);
+
+      const userSaved = await this.userModel.create(user);
+
+      // 3) payload JWT
+      const payload = {
+        id: userSaved._id.toString(),
+        name: (userSaved as any).nombre ?? (userSaved as any).name,
+      };
+
+      const token = this.jwtService.sign(payload);
+
+      // 4) quitar password de la respuesta
+      const userObj = userSaved.toObject();
+      const { password, ...userWithoutPassword } = userObj;
+
+      return {
+        user: userWithoutPassword,
+        token: 'Bearer ' + token,
+      };
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
-    // 2) crear usuario (si tu UsersService ya hashea, ideal es re-usarlo;
-    // aquí asumo que `user.password` ya llega hasheada o tienes middleware)
-    user.password = await hash(user.password, 10);
-
-    const userSaved = await this.userModel.create(user);
-
-    // 3) payload JWT
-    const payload = {
-      id: userSaved._id.toString(),
-      name: (userSaved as any).nombre ?? (userSaved as any).name,
-    };
-
-    const token = this.jwtService.sign(payload);
-
-    // 4) quitar password de la respuesta
-    const userObj = userSaved.toObject();
-    const { password, ...userWithoutPassword } = userObj;
-
-    return {
-      user: userWithoutPassword,
-      token: 'Bearer ' + token,
-    };
   }
 
   async login(loginData: LoginAuthDto) {

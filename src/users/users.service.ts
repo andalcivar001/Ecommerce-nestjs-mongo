@@ -19,8 +19,12 @@ export class UsersService {
   ) {}
 
   async create(user: CreateUserDto) {
-    const newUser = new this.userModel(user);
-    return await newUser.save();
+    try {
+      const newUser = new this.userModel(user);
+      return await newUser.save();
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   async findAll() {
@@ -28,47 +32,58 @@ export class UsersService {
   }
 
   async update(id: string, user: UpdateUserDto) {
-    const userFound = await this.userModel.findById(id);
+    try {
+      const userFound = await this.userModel.findById(id);
 
-    if (!userFound) {
-      throw new HttpException('Usuario no existe', HttpStatus.NOT_FOUND);
+      if (!userFound) {
+        throw new HttpException('Usuario no existe', HttpStatus.NOT_FOUND);
+      }
+
+      Object.assign(userFound, user);
+      return await userFound.save();
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
-    Object.assign(userFound, user);
-    return await userFound.save();
   }
 
   async updateWithImage(file: Express.Multer.File, id: string, user: any) {
-    const url = await uploadFile(file, file.originalname);
+    try {
+      const url = await uploadFile(file, file.originalname);
 
-    if (!url) {
-      throw new HttpException(
-        'La imagen no se pudo guardar',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-
-    let dto: UpdateUserDto;
-
-    if (typeof user.user === 'string') {
-      try {
-        dto = JSON.parse(user.user);
-      } catch (error) {
-        throw new BadRequestException('Formato JSON inválido', user.toString());
+      if (!url) {
+        throw new HttpException(
+          'La imagen no se pudo guardar',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
       }
-    } else {
-      dto = user;
+
+      let dto: UpdateUserDto;
+
+      if (typeof user.user === 'string') {
+        try {
+          dto = JSON.parse(user.user);
+        } catch (error) {
+          throw new BadRequestException(
+            'Formato JSON inválido',
+            user.toString(),
+          );
+        }
+      } else {
+        dto = user;
+      }
+
+      const userFound = await this.userModel.findById(id);
+
+      if (!userFound) {
+        throw new HttpException('Usuario no existe', HttpStatus.NOT_FOUND);
+      }
+
+      dto.imagen = url;
+
+      Object.assign(userFound, dto);
+      return await userFound.save();
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
-    const userFound = await this.userModel.findById(id);
-
-    if (!userFound) {
-      throw new HttpException('Usuario no existe', HttpStatus.NOT_FOUND);
-    }
-
-    dto.imagen = url;
-
-    Object.assign(userFound, dto);
-    return await userFound.save();
   }
 }
