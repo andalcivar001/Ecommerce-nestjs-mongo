@@ -3,6 +3,7 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { Client, ClientDocument } from './schema/client.schema';
 import { InjectModel } from '@nestjs/mongoose';
@@ -17,9 +18,16 @@ export class ClientService {
     private readonly clientModel: Model<ClientDocument>,
   ) {}
 
-  async create(client: CreateClientDto) {
-    const newClient = new this.clientModel(client);
-    return await newClient.save();
+  async create(createClientDto: CreateClientDto) {
+    try {
+      const client = await this.clientModel.create(createClientDto);
+      return client;
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Error creating client',
+        error.message,
+      );
+    }
   }
 
   async findAll() {
