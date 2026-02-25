@@ -84,10 +84,10 @@ export class Order {
   })
   idUsuario: Types.ObjectId;
 
-  @Prop({ required: false })
+  @Prop({ required: true })
   latitud: number;
 
-  @Prop({ required: false })
+  @Prop({ required: true })
   longitud: number;
 }
 export const OrderSchema = SchemaFactory.createForClass(Order);

@@ -44,4 +44,12 @@ export class CreateOrderDto {
   @IsNotEmpty()
   @IsNumber()
   total: number;
+
+  @IsNotEmpty()
+  @IsNumber()
+  latitud: number;
+
+  @IsNotEmpty()
+  @IsNumber()
+  longitud: number;
 }
