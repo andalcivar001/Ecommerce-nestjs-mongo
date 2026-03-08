@@ -96,11 +96,14 @@ export class OrderService {
         throw new BadRequestException('ID inválido');
       }
 
-      const order = await this.orderModel.findByIdAndDelete(id);
+      const order = await this.orderModel.findById(id);
 
       if (!order) {
         throw new HttpException('Orden no encontrada', HttpStatus.NOT_FOUND);
       }
+
+      order.estado = 'X';
+      await order.save();
 
       return true;
     } catch (error) {
