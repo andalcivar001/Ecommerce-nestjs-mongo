@@ -5,12 +5,14 @@ import { JwtStrategy } from 'src/auth/jwt/jwt.strategy';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Order, OrderSchema } from './schema/order.schema';
 import { Counter, CounterSchema } from './schema/counter.schema';
+import { Product, ProductSchema } from 'src/products/schemas/product.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: Order.name, schema: OrderSchema },
       { name: Counter.name, schema: CounterSchema },
+      { name: Product.name, schema: ProductSchema },
     ]),
   ],
   providers: [OrderService, JwtStrategy],
