@@ -10,6 +10,8 @@ import { ClientModule } from './client/client.module';
 import { ProvinceModule } from './province/province.module';
 import { CitiesModule } from './cities/cities.module';
 import { OrderModule } from './order/order.module';
+import { PaymentMethodsModule } from './payment-methods/payment-methods.module';
+import { FinancialEntitiesModule } from './financial-entities/financial-entities.module';
 
 @Module({
   imports: [
@@ -29,6 +31,8 @@ import { OrderModule } from './order/order.module';
     ProvinceModule,
     CitiesModule,
     OrderModule,
+    PaymentMethodsModule,
+    FinancialEntitiesModule,
   ],
 })
 export class AppModule {}
