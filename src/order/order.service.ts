@@ -11,6 +11,7 @@ import { Counter, CounterDocument } from './schema/counter.schema';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { ConsultaOrderDto } from './dto/consultar-order.dto';
+import { Product, ProductDocument } from 'src/products/schemas/product.schema';
 
 @Injectable()
 export class OrderService {
@@ -21,6 +22,9 @@ export class OrderService {
     private readonly orderModel: Model<OrderDocument>,
     @InjectModel(Counter.name)
     private readonly counterModel: Model<CounterDocument>,
+
+    @InjectModel(Product.name)
+    private readonly productModel: Model<ProductDocument>,
   ) {}
 
   async getNextSequence(): Promise<number> {
@@ -33,6 +37,27 @@ export class OrderService {
   }
 
   async create(order: CreateOrderDto) {
+    // 1) Descontar stock por cada detalle
+    for (const detalle of order.detalles) {
+      const updated = await this.productModel.findOneAndUpdate(
+        {
+          _id: detalle.idProducto,
+          stock: { $gte: detalle.cantidad }, // valida stock suficiente
+        },
+        {
+          $inc: { stock: -detalle.cantidad }, // descuenta
+        },
+        { new: true },
+      );
+
+      if (!updated) {
+        throw new BadRequestException(
+          `Stock insuficiente para producto ${detalle.idProducto}`,
+        );
+      }
+    }
+
+    // 2) Crear orden
     const newOrder = new this.orderModel(order);
     newOrder.estado = 'N';
     newOrder.secuencia = await this.getNextSequence();
