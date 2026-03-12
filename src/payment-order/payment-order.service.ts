@@ -4,21 +4,20 @@ import {
   HttpStatus,
   Injectable,
 } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-
-import { CreatePaymentMethodDto } from './dto/create-payment-method.dto';
-import { UpdatePaymentMethodDto } from './dto/update-payment-method.dto';
-import { isValidObjectId, Model } from 'mongoose';
 import {
-  PaymentMethod,
-  PaymentMethodDocument,
-} from './schema/payment-method.schema';
+  PaymentOrder,
+  PaymentOrderDocument,
+} from './schema/payment-order.schema';
+import { isValidObjectId, Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
+import { CreatePaymentOrderDto } from './dto/create-payment-order.dto';
+import { UpdatePaymentOrderDto } from './dto/update-payment-order.dto';
 
 @Injectable()
-export class PaymentMethodsService {
+export class PaymentOrderService {
   constructor(
-    @InjectModel(PaymentMethod.name)
-    private readonly pmModel: Model<PaymentMethodDocument>,
+    @InjectModel(PaymentOrder.name)
+    private readonly pmModel: Model<PaymentOrderDocument>,
   ) {}
   async findAll() {
     return await this.pmModel.find().sort({ nombre: 1 });
@@ -37,12 +36,12 @@ export class PaymentMethodsService {
     }
   }
 
-  async create(pm: CreatePaymentMethodDto) {
+  async create(pm: CreatePaymentOrderDto) {
     const newPm = new this.pmModel(pm);
     return await newPm.save();
   }
 
-  async update(id: string, fe: UpdatePaymentMethodDto) {
+  async update(id: string, fe: UpdatePaymentOrderDto) {
     try {
       const pmFound = await this.pmModel.findById(id);
 

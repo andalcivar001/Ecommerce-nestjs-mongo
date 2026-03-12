@@ -12,6 +12,7 @@ import { CitiesModule } from './cities/cities.module';
 import { OrderModule } from './order/order.module';
 import { PaymentMethodsModule } from './payment-methods/payment-methods.module';
 import { FinancialEntitiesModule } from './financial-entities/financial-entities.module';
+import { PaymentOrderModule } from './payment-order/payment-order.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { FinancialEntitiesModule } from './financial-entities/financial-entities
     OrderModule,
     PaymentMethodsModule,
     FinancialEntitiesModule,
+    PaymentOrderModule,
   ],
 })
 export class AppModule {}
