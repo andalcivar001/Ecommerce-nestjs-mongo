@@ -19,8 +19,10 @@ export class PaymentOrderService {
     @InjectModel(PaymentOrder.name)
     private readonly pmModel: Model<PaymentOrderDocument>,
   ) {}
-  async findAll() {
-    return await this.pmModel.find().sort({ nombre: 1 });
+  async findAll(idOrden: string) {
+    return await this.pmModel
+      .find({ idOrden: idOrden })
+      .sort({ createdAt: -1 });
   }
 
   async findById(id: string) {
