@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, now, Types } from 'mongoose';
 import { Client } from 'src/client/schema/client.schema';
+import { PaymentOrder } from 'src/payment-order/schema/payment-order.schema';
 import { Product } from 'src/products/schemas/product.schema';
 import { User } from 'src/users/schemas/user.schema';
 
@@ -105,6 +106,13 @@ OrderSchema.virtual('usuario', {
   localField: 'idUsuario',
   foreignField: '_id',
   justOne: true,
+});
+
+OrderSchema.virtual('pagos', {
+  ref: PaymentOrder.name,
+  localField: '_id',
+  foreignField: 'idOrden',
+  justOne: false,
 });
 
 // habilito las virtuales

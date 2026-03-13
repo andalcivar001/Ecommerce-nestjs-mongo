@@ -82,7 +82,9 @@ export class OrderService {
 
   async findById(id: string) {
     try {
-      const order = await this.orderModel.findById(id);
+      const order = await this.orderModel
+        .findById(id)
+        .populate('cliente', 'usuario', 'detalles.producto', 'pagos');
       if (!order) {
         throw new HttpException('Orden no encontrada', HttpStatus.NOT_FOUND);
       }

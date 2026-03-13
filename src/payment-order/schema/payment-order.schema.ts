@@ -2,7 +2,10 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, now, Types } from 'mongoose';
 import { FinancialEntities } from 'src/financial-entities/schema/financial-entities.schema';
 import { Order } from 'src/order/schema/order.schema';
-import { PaymentMethod } from 'src/payment-methods/schema/payment-method.schema';
+import {
+  PaymentMethod,
+  PaymentMethodSchema,
+} from 'src/payment-methods/schema/payment-method.schema';
 
 export type PaymentOrderDocument = PaymentOrder & Document;
 
@@ -39,4 +42,15 @@ export class PaymentOrder {
   isActive: boolean;
 }
 
-export const PaymentOrderSchema = SchemaFactory.createForClass(PaymentMethod);
+export const PaymentOrderSchema = SchemaFactory.createForClass(PaymentOrder);
+
+PaymentOrderSchema.virtual('orden', {
+  ref: Order.name,
+  localField: 'idOrden',
+  foreignField: '_id',
+  justOne: true,
+});
+
+// habilito las virtuales
+PaymentOrderSchema.set('toJSON', { virtuals: true });
+PaymentOrderSchema.set('toObject', { virtuals: true });
