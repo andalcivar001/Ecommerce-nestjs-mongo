@@ -13,14 +13,14 @@ export type PaymentOrderDocument = PaymentOrder & Document;
 export class PaymentOrder {
   @Prop({
     type: Types.ObjectId,
-    ref: Order.name,
+    ref: 'Order',
     required: true,
   })
   idOrden: Types.ObjectId;
 
   @Prop({
     type: Types.ObjectId,
-    ref: PaymentMethod.name,
+    ref: 'PaymentMethod',
     required: true,
   })
   idPaymentMethod: Types.ObjectId;
@@ -29,14 +29,14 @@ export class PaymentOrder {
   monto: number;
 
   @Prop({ required: false })
-  referencia: string;
+  referencia?: string;
 
   @Prop({
     type: Types.ObjectId,
-    ref: FinancialEntities.name,
+    ref: 'FinancialEntities',
     required: false,
   })
-  idEntidadFinanciera: Types.ObjectId;
+  idEntidadFinanciera?: Types.ObjectId;
 
   @Prop({ default: true })
   isActive: boolean;
@@ -45,7 +45,7 @@ export class PaymentOrder {
 export const PaymentOrderSchema = SchemaFactory.createForClass(PaymentOrder);
 
 PaymentOrderSchema.virtual('orden', {
-  ref: Order.name,
+  ref: 'Order',
   localField: 'idOrden',
   foreignField: '_id',
   justOne: true,

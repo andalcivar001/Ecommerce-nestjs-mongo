@@ -27,14 +27,14 @@ export class Product {
 
   @Prop({
     type: Types.ObjectId,
-    ref: Category.name,
+    ref: 'Category',
     required: true,
   })
   idCategory: Types.ObjectId;
 
   @Prop({
     type: Types.ObjectId,
-    ref: SubCategory.name,
+    ref: 'SubCategory',
     required: true,
   })
   idSubcategory: Types.ObjectId;

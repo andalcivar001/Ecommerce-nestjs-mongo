@@ -11,7 +11,7 @@ export type OrderDocument = Order & Document;
 export class OrderDetalle {
   @Prop({
     type: Types.ObjectId,
-    ref: Product.name,
+    ref: 'Product',
     required: true,
   })
   idProducto: Types.ObjectId;
@@ -32,7 +32,7 @@ export const OrderDetalleSchema = SchemaFactory.createForClass(OrderDetalle);
    Virtual: producto
 ====================================================== */
 OrderDetalleSchema.virtual('producto', {
-  ref: Product.name,
+  ref: 'Product',
   localField: 'idProducto',
   foreignField: '_id',
   justOne: true,
@@ -51,7 +51,7 @@ export class Order {
 
   @Prop({
     type: Types.ObjectId,
-    ref: Client.name,
+    ref: 'Client',
     required: true,
   })
   idCliente: Types.ObjectId;
@@ -80,7 +80,7 @@ export class Order {
 
   @Prop({
     type: Types.ObjectId,
-    ref: User.name,
+    ref: 'User',
     required: true,
   })
   idUsuario: Types.ObjectId;
@@ -95,21 +95,21 @@ export const OrderSchema = SchemaFactory.createForClass(Order);
 
 // creo campos virtuales para devolverlos en el response
 OrderSchema.virtual('cliente', {
-  ref: Client.name,
+  ref: 'Client',
   localField: 'idCliente',
   foreignField: '_id',
   justOne: true,
 });
 
 OrderSchema.virtual('usuario', {
-  ref: User.name,
+  ref: 'User',
   localField: 'idUsuario',
   foreignField: '_id',
   justOne: true,
 });
 
 OrderSchema.virtual('pagos', {
-  ref: PaymentOrder.name,
+  ref: 'PaymentOrder',
   localField: '_id',
   foreignField: 'idOrden',
   justOne: false,

@@ -38,14 +38,14 @@ export class Client {
 
   @Prop({
     type: Types.ObjectId,
-    ref: Province.name,
+    ref: 'Province',
     required: true,
   })
   idProvincia: Types.ObjectId;
 
   @Prop({
     type: Types.ObjectId,
-    ref: City.name,
+    ref: 'City',
     required: true,
   })
   idCiudad: Types.ObjectId;

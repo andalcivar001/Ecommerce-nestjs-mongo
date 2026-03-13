@@ -14,7 +14,7 @@ export class SubCategory {
 
   @Prop({
     type: Types.ObjectId,
-    ref: Category.name,
+    ref: 'Category',
     required: true,
   })
   idCategory: Types.ObjectId;
