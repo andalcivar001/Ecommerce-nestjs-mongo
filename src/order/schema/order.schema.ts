@@ -90,6 +90,9 @@ export class Order {
 
   @Prop({ required: true })
   longitud: number;
+
+  @Prop({ required: false, default: 0 })
+  totalPagado: number;
 }
 export const OrderSchema = SchemaFactory.createForClass(Order);
 
