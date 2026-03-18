@@ -86,6 +86,7 @@ export class OrderService {
         .findById(id)
         .populate('cliente')
         .populate('usuario')
+        .populate('pagos')
         .populate('detalles.producto');
       if (!order) {
         throw new HttpException('Orden no encontrada', HttpStatus.NOT_FOUND);
