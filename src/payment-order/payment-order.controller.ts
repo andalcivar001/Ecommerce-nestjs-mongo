@@ -18,7 +18,7 @@ export class PaymentOrderController {
   constructor(private readonly poService: PaymentOrderService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Get('orden/:idOrden')
+  @Get('order/:idOrden')
   findAll(@Param('idOrden') idOrden: string) {
     return this.poService.findAll(idOrden);
   }

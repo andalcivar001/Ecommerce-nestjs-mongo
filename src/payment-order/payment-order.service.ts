@@ -22,6 +22,8 @@ export class PaymentOrderService {
   async findAll(idOrden: string) {
     return await this.pmModel
       .find({ idOrden: idOrden })
+      .populate('metodoPago')
+      .populate('entidadFinanciera')
       .sort({ createdAt: -1 });
   }
 

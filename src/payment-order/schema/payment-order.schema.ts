@@ -51,6 +51,20 @@ PaymentOrderSchema.virtual('orden', {
   justOne: true,
 });
 
+PaymentOrderSchema.virtual('metodoPago', {
+  ref: 'PaymentMethod',
+  localField: 'idPaymentMethod',
+  foreignField: '_id',
+  justOne: true,
+});
+
+PaymentOrderSchema.virtual('entidadFinanciera', {
+  ref: 'FinancialEntities',
+  localField: 'idEntidadFinanciera',
+  foreignField: '_id',
+  justOne: true,
+});
+
 // habilito las virtuales
 PaymentOrderSchema.set('toJSON', { virtuals: true });
 PaymentOrderSchema.set('toObject', { virtuals: true });
