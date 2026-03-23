@@ -40,6 +40,9 @@ export class PaymentOrder {
 
   @Prop({ default: true })
   isActive: boolean;
+
+  @Prop({ required: false })
+  observaciones?: string;
 }
 
 export const PaymentOrderSchema = SchemaFactory.createForClass(PaymentOrder);
