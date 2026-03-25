@@ -5,7 +5,7 @@ import {
   IsString,
   IsNumber,
 } from 'class-validator';
-
+//dto
 export class CreatePaymentOrderDto {
   @IsNotEmpty()
   @IsString()
