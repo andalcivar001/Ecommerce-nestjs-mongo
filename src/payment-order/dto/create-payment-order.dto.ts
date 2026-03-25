@@ -11,7 +11,7 @@ export class CreatePaymentOrderDto {
   @IsString()
   idOrden: string;
 
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
   idPaymentMethod: string;
 
@@ -23,7 +23,7 @@ export class CreatePaymentOrderDto {
   @IsString()
   referencia: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   idEntidadFinanciera: string;
 
