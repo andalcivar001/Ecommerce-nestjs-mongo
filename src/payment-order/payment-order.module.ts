@@ -6,21 +6,13 @@ import {
   PaymentOrder,
   PaymentOrderSchema,
 } from './schema/payment-order.schema';
-import {
-  FinancialEntities,
-  FinancialEntitiesSchema,
-} from 'src/financial-entities/schema/financial-entities.schema';
-import {
-  PaymentMethod,
-  PaymentMethodSchema,
-} from 'src/payment-methods/schema/payment-method.schema';
+import { Order, OrderSchema } from 'src/order/schema/order.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: PaymentOrder.name, schema: PaymentOrderSchema },
-      { name: FinancialEntities.name, schema: FinancialEntitiesSchema },
-      { name: PaymentMethod.name, schema: PaymentMethodSchema },
+      { name: Order.name, schema: OrderSchema },
     ]),
   ],
   providers: [PaymentOrderService],

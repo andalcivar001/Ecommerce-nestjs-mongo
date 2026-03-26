@@ -17,10 +17,10 @@ import { Order, OrderDocument } from 'src/order/schema/order.schema';
 @Injectable()
 export class PaymentOrderService {
   constructor(
-    @InjectModel(Order.name)
-    private readonly orderModel: Model<OrderDocument>,
     @InjectModel(PaymentOrder.name)
     private readonly pmModel: Model<PaymentOrderDocument>,
+    @InjectModel(Order.name)
+    private readonly orderModel: Model<OrderDocument>,
   ) {}
   async findAll(idOrden: string) {
     return await this.pmModel
