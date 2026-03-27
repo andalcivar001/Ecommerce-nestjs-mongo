@@ -22,28 +22,51 @@ export class PaymentOrderService {
     @InjectModel(Order.name)
     private readonly orderModel: Model<OrderDocument>,
   ) {}
+
+  private normalizePaymentOrderPayload(
+    payload: CreatePaymentOrderDto | UpdatePaymentOrderDto,
+  ) {
+    if (payload.idEntidadFinanciera === '') {
+      payload.idEntidadFinanciera = undefined;
+    }
+
+    return payload;
+  }
+
   async findAll(idOrden: string) {
-    return await this.pmModel
+    const pagos = await this.pmModel
       .find({ idOrden: idOrden })
       .populate('metodoPago')
-      .populate('entidadFinanciera')
       .sort({ createdAt: -1 });
+
+    for (const pago of pagos) {
+      if (isValidObjectId(pago.idEntidadFinanciera)) {
+        await pago.populate('entidadFinanciera');
+      }
+    }
+
+    return pagos;
   }
 
   async findById(id: string) {
     try {
-      const category = await this.pmModel.findById(id);
-      if (!category) {
+      const pago = await this.pmModel.findById(id);
+      if (!pago) {
         throw new HttpException('Entidad no encontrada', HttpStatus.NOT_FOUND);
       }
 
-      return category;
+      if (isValidObjectId(pago.idEntidadFinanciera)) {
+        await pago.populate('entidadFinanciera');
+      }
+
+      return pago;
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
   async create(pm: CreatePaymentOrderDto) {
+    this.normalizePaymentOrderPayload(pm);
     const newPm = new this.pmModel(pm);
     const saved = await newPm.save();
     await this.actualizarTotalPagado(pm.idOrden);
@@ -52,6 +75,7 @@ export class PaymentOrderService {
 
   async update(id: string, fe: UpdatePaymentOrderDto) {
     try {
+      this.normalizePaymentOrderPayload(fe);
       const pmFound = await this.pmModel.findById(id);
 
       if (!pmFound) {

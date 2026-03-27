@@ -35,6 +35,8 @@ export class PaymentOrder {
     type: Types.ObjectId,
     ref: 'FinancialEntities',
     required: false,
+    set: (value: string | Types.ObjectId | undefined | null) =>
+      value === '' || value === null ? undefined : value,
   })
   idEntidadFinanciera?: Types.ObjectId;
 
