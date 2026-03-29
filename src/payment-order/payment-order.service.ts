@@ -50,7 +50,7 @@ export class PaymentOrderService {
 
   async findById(id: string) {
     try {
-      const pago = await this.pmModel.findById(id);
+      const pago = await this.pmModel.findById(id).populate('metodoPago');
       if (!pago) {
         throw new HttpException('Entidad no encontrada', HttpStatus.NOT_FOUND);
       }
